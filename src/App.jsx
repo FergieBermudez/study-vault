@@ -1,121 +1,117 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [sessions] = useState([
+    {
+      id: 1,
+      course: 'Computer Networks',
+      topic: 'Routing and Switching',
+      date: '2026-09-28',
+      duration: 60,
+      status: 'Planned',
+    },
+    {
+      id: 2,
+      course: 'Engineering Design',
+      topic: 'Project Documentation',
+      date: '2026-09-29',
+      duration: 45,
+      status: 'In Progress',
+    },
+  ])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <div className="app">
+      <header className="navbar">
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
+          <h1>StudyVault</h1>
+          <p>Personal Study Session Tracker</p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+        <button className="logout-button">Logout</button>
+      </header>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      <main className="container">
+        <section className="welcome-section">
+          <div>
+            <p className="eyebrow">MY STUDY DASHBOARD</p>
+            <h2>Stay organized. Study smarter.</h2>
+            <p>
+              Keep track of your courses, study topics, and progress in one
+              place.
+            </p>
+          </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+          <button className="primary-button">+ Add Study Session</button>
+        </section>
+
+        <section className="stats">
+          <div className="stat-card">
+            <span>Total Sessions</span>
+            <strong>{sessions.length}</strong>
+          </div>
+
+          <div className="stat-card">
+            <span>Completed</span>
+            <strong>
+              {sessions.filter((session) => session.status === 'Completed').length}
+            </strong>
+          </div>
+
+          <div className="stat-card">
+            <span>Planned</span>
+            <strong>
+              {sessions.filter((session) => session.status === 'Planned').length}
+            </strong>
+          </div>
+        </section>
+
+        <section className="sessions-section">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">STUDY SESSIONS</p>
+              <h3>Your Sessions</h3>
+            </div>
+          </div>
+
+          <div className="session-list">
+            {sessions.map((session) => (
+              <article className="session-card" key={session.id}>
+                <div className="session-main">
+                  <div className="course-icon">
+                    {session.course.charAt(0)}
+                  </div>
+
+                  <div>
+                    <h4>{session.course}</h4>
+                    <p>{session.topic}</p>
+
+                    <div className="session-details">
+                      <span>📅 {session.date}</span>
+                      <span>⏱ {session.duration} min</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="session-actions">
+                  <span
+                    className={`status ${session.status
+                      .toLowerCase()
+                      .replace(' ', '-')}`}
+                  >
+                    {session.status}
+                  </span>
+
+                  <button className="edit-button">Edit</button>
+                  <button className="delete-button">Delete</button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
   )
 }
 
