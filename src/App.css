@@ -371,3 +371,60 @@ button {
   color: #dce5ff;
   font-size: 14px;
 }
+/* Study Session Form */
+.session-form {
+  background: white;
+  border: 1px solid #dbe3f0;
+  border-radius: 14px;
+  padding: 24px;
+  margin: 24px 0;
+  box-shadow: 0 4px 14px rgba(15, 35, 80, 0.06);
+}
+
+.session-form h3 {
+  margin: 0 0 20px;
+  color: #102451;
+  font-size: 20px;
+}
+
+.session-form input,
+.session-form select,
+.session-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border: 1px solid #ccd6e5;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  background: white;
+  color: #172033;
+}
+
+.session-form input:focus,
+.session-form select:focus,
+.session-form textarea:focus {
+  outline: none;
+  border-color: #2f6fed;
+  box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.12);
+}
+
+.session-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.session-form button {
+  padding: 11px 20px;
+  border: 1px solid #ccd6e5;
+  border-radius: 8px;
+  background: #f5f7fb;
+  color: #344054;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.session-form button:hover {
+  background: #e9eef6;
+}

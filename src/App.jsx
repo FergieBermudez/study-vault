@@ -12,6 +12,16 @@ function App() {
   const [message, setMessage] = useState('')
 
 const [sessions, setSessions] = useState([])
+const [showForm, setShowForm] = useState(false)
+
+const [newSession, setNewSession] = useState({
+  course: '',
+  topic: '',
+  study_date: '',
+  duration: '',
+  status: 'Planned',
+  notes: '',
+})
 const fetchSessions = async (userId) => {
   const { data, error } = await supabase
     .from('study_sessions')
@@ -25,6 +35,51 @@ const fetchSessions = async (userId) => {
   }
 
   setSessions(data || [])
+}
+const handleAddSession = async (e) => {
+  e.preventDefault()
+
+  if (
+    !newSession.course ||
+    !newSession.topic ||
+    !newSession.study_date ||
+    !newSession.duration
+  ) {
+    alert('Please fill in all required fields.')
+    return
+  }
+
+  const { error } = await supabase
+    .from('study_sessions')
+    .insert([
+      {
+        user_id: user.id,
+        course: newSession.course,
+        topic: newSession.topic,
+        study_date: newSession.study_date,
+        duration: Number(newSession.duration),
+        status: newSession.status,
+        notes: newSession.notes,
+      },
+    ])
+
+  if (error) {
+    console.error('Error adding study session:', error)
+    alert('Could not add study session.')
+    return
+  }
+
+  setNewSession({
+    course: '',
+    topic: '',
+    study_date: '',
+    duration: '',
+    status: 'Planned',
+    notes: '',
+  })
+
+  setShowForm(false)
+  fetchSessions(user.id)
 }
   useEffect(() => {
     const checkUser = async () => {
@@ -220,9 +275,82 @@ const fetchSessions = async (userId) => {
             </p>
           </div>
 
-          <button className="primary-button">+ Add Study Session</button>
+        <button
+  className="primary-button"
+  onClick={() => setShowForm(true)}
+>
+  + Add Study Session
+</button>
         </section>
+{showForm && (
+  <section className="session-form">
+    <h3>Add Study Session</h3>
 
+    <input
+      type="text"
+      placeholder="Course"
+      value={newSession.course}
+      onChange={(e) =>
+        setNewSession({ ...newSession, course: e.target.value })
+      }
+    />
+
+    <input
+      type="text"
+      placeholder="Topic"
+      value={newSession.topic}
+      onChange={(e) =>
+        setNewSession({ ...newSession, topic: e.target.value })
+      }
+    />
+
+    <input
+      type="date"
+      value={newSession.study_date}
+      onChange={(e) =>
+        setNewSession({ ...newSession, study_date: e.target.value })
+      }
+    />
+
+    <input
+      type="number"
+      placeholder="Duration in minutes"
+      value={newSession.duration}
+      onChange={(e) =>
+        setNewSession({ ...newSession, duration: e.target.value })
+      }
+    />
+
+    <select
+      value={newSession.status}
+      onChange={(e) =>
+        setNewSession({ ...newSession, status: e.target.value })
+      }
+    >
+      <option value="Planned">Planned</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+    </select>
+
+    <textarea
+      placeholder="Notes (optional)"
+      value={newSession.notes}
+      onChange={(e) =>
+        setNewSession({ ...newSession, notes: e.target.value })
+      }
+    />
+<button
+  type="button"
+  className="primary-button"
+  onClick={handleAddSession}
+>
+  Save Study Session
+</button>
+    <button type="button" onClick={() => setShowForm(false)}>
+      Cancel
+    </button>
+  </section>
+)}
         <section className="stats">
           <div className="stat-card">
             <span>Total Sessions</span>
