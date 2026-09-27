@@ -11,25 +11,21 @@ function App() {
   const [authMode, setAuthMode] = useState('login')
   const [message, setMessage] = useState('')
 
-  const [sessions] = useState([
-    {
-      id: 1,
-      course: 'Computer Networks',
-      topic: 'Routing and Switching',
-      date: '2026-09-28',
-      duration: 60,
-      status: 'Planned',
-    },
-    {
-      id: 2,
-      course: 'Engineering Design',
-      topic: 'Project Documentation',
-      date: '2026-09-29',
-      duration: 45,
-      status: 'In Progress',
-    },
-  ])
+const [sessions, setSessions] = useState([])
+const fetchSessions = async (userId) => {
+  const { data, error } = await supabase
+    .from('study_sessions')
+    .select('*')
+    .eq('user_id', userId)
+    .order('study_date', { ascending: true })
 
+  if (error) {
+    console.error('Error loading study sessions:', error)
+    return
+  }
+
+  setSessions(data || [])
+}
   useEffect(() => {
     const checkUser = async () => {
       const {
@@ -37,6 +33,9 @@ function App() {
       } = await supabase.auth.getSession()
 
       setUser(session?.user ?? null)
+      if (session?.user) {
+  fetchSessions(session.user.id)
+}
       setLoading(false)
     }
 
