@@ -1,16 +1,95 @@
-# React + Vite
+# StudyVault
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+StudyVault is a full-stack web application designed to help students organize and track their study sessions. Users can create an account, log in securely, and manage their own study-session information through a simple dashboard.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- User registration
+- User login and logout
+- Secure user authentication
+- Create study sessions
+- View saved study sessions
+- Edit existing study sessions
+- Delete study sessions
+- Track planned and completed sessions
+- View total, completed, and planned session counts
+- User-specific data storage
+- Persistent data stored in Supabase
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+- React
+- Vite
+- JavaScript
+- CSS
 
-## Expanding the Oxlint configuration
+### Backend and Database
+- Supabase
+- Supabase Authentication
+- PostgreSQL database
+- Row Level Security (RLS)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### Development and Deployment
+- Visual Studio Code
+- Git
+- GitHub
+- Netlify
+
+## Database
+
+StudyVault uses a Supabase PostgreSQL database to store study sessions. Each study session contains:
+
+- Course
+- Topic
+- Study date
+- Duration
+- Status
+- Notes
+
+Each study session is associated with the authenticated user's ID.
+
+Row Level Security policies are used so authenticated users can create, view, update, and delete only their own study-session data.
+
+## Authentication
+
+StudyVault uses Supabase Authentication. Users can register for an account, log in, and log out. Study-session data is connected to the authenticated user.
+
+## CRUD Operations
+
+StudyVault supports all four CRUD operations:
+
+- Create - Add a new study session
+- Read - View saved study sessions
+- Update - Edit an existing study session
+- Delete - Remove a study session
+
+## Local Setup
+
+1. Clone the repository.
+
+2. Install the project dependencies:
+
+   npm install
+
+3. Create a `.env` file in the project root.
+
+4. Add the following Supabase environment variables:
+
+   VITE_SUPABASE_URL=your_supabase_project_url
+
+   VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+
+5. Start the development server:
+
+   npm run dev
+
+6. Open the local URL provided by Vite in your browser.
+
+## Live Application
+
+The deployed application link will be added here after deployment.
+
+## Author
+
+Fergie Bermudez
