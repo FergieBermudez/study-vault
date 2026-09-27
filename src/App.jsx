@@ -81,6 +81,26 @@ const handleAddSession = async (e) => {
   setShowForm(false)
   fetchSessions(user.id)
 }
+const handleDeleteSession = async (sessionId) => {
+  const confirmed = window.confirm(
+    'Are you sure you want to delete this study session?'
+  )
+
+  if (!confirmed) return
+
+  const { error } = await supabase
+    .from('study_sessions')
+    .delete()
+    .eq('id', sessionId)
+
+  if (error) {
+    console.error('Error deleting study session:', error)
+    alert('Could not delete study session.')
+    return
+  }
+
+  fetchSessions(user.id)
+}
   useEffect(() => {
     const checkUser = async () => {
       const {
@@ -409,7 +429,12 @@ const handleAddSession = async (e) => {
                   </span>
 
                   <button className="edit-button">Edit</button>
-                  <button className="delete-button">Delete</button>
+                  <button
+  className="delete-button"
+  onClick={() => handleDeleteSession(session.id)}
+>
+  Delete
+</button>
                 </div>
               </article>
             ))}
