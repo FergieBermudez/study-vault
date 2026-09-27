@@ -13,7 +13,7 @@ function App() {
 
 const [sessions, setSessions] = useState([])
 const [showForm, setShowForm] = useState(false)
-
+const [editingSessionId, setEditingSessionId] = useState(null)
 const [newSession, setNewSession] = useState({
   course: '',
   topic: '',
@@ -49,19 +49,32 @@ const handleAddSession = async (e) => {
     return
   }
 
-  const { error } = await supabase
+  const sessionData = {
+  user_id: user.id,
+  course: newSession.course,
+  topic: newSession.topic,
+  study_date: newSession.study_date,
+  duration: Number(newSession.duration),
+  status: newSession.status,
+  notes: newSession.notes,
+}
+
+let error
+
+if (editingSessionId) {
+  const result = await supabase
     .from('study_sessions')
-    .insert([
-      {
-        user_id: user.id,
-        course: newSession.course,
-        topic: newSession.topic,
-        study_date: newSession.study_date,
-        duration: Number(newSession.duration),
-        status: newSession.status,
-        notes: newSession.notes,
-      },
-    ])
+    .update(sessionData)
+    .eq('id', editingSessionId)
+
+  error = result.error
+} else {
+  const result = await supabase
+    .from('study_sessions')
+    .insert([sessionData])
+
+  error = result.error
+}
 
   if (error) {
     console.error('Error adding study session:', error)
@@ -79,7 +92,8 @@ const handleAddSession = async (e) => {
   })
 
   setShowForm(false)
-  fetchSessions(user.id)
+setEditingSessionId(null)
+fetchSessions(user.id)
 }
 const handleDeleteSession = async (sessionId) => {
   const confirmed = window.confirm(
@@ -428,7 +442,23 @@ const handleDeleteSession = async (sessionId) => {
                     {session.status}
                   </span>
 
-                  <button className="edit-button">Edit</button>
+                  <button
+  className="edit-button"
+  onClick={() => {
+    setEditingSessionId(session.id)
+    setNewSession({
+      course: session.course,
+      topic: session.topic,
+      study_date: session.study_date,
+      duration: session.duration,
+      status: session.status,
+      notes: session.notes || '',
+    })
+    setShowForm(true)
+  }}
+>
+  Edit
+</button>
                   <button
   className="delete-button"
   onClick={() => handleDeleteSession(session.id)}
