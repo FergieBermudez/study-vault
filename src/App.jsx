@@ -1,7 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { supabase } from './supabase'
 import './App.css'
 
 function App() {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [authMode, setAuthMode] = useState('login')
+  const [message, setMessage] = useState('')
+
   const [sessions] = useState([
     {
       id: 1,
@@ -21,6 +30,170 @@ function App() {
     },
   ])
 
+  useEffect(() => {
+    const checkUser = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      setUser(session?.user ?? null)
+      setLoading(false)
+    }
+
+    checkUser()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleAuth = async (event) => {
+    event.preventDefault()
+    setMessage('')
+
+    if (!email || !password) {
+      setMessage('Please enter your email and password.')
+      return
+    }
+
+    if (authMode === 'signup') {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+
+      if (error) {
+        setMessage(error.message)
+        return
+      }
+
+      if (data.session) {
+        setMessage('Account created successfully!')
+      } else {
+        setMessage('Account created! Check your email to confirm your account.')
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) {
+        setMessage(error.message)
+        return
+      }
+
+      setMessage('')
+    }
+  }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setEmail('')
+    setPassword('')
+    setMessage('')
+  }
+
+  if (loading) {
+    return (
+      <div className="auth-page">
+        <div className="auth-card">
+          <h1>StudyVault</h1>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="auth-brand">
+            <p className="eyebrow">WELCOME TO</p>
+            <h1>StudyVault</h1>
+            <p>Organize your study sessions and keep your progress in one place.</p>
+          </div>
+
+          <div className="auth-tabs">
+            <button
+              type="button"
+              className={authMode === 'login' ? 'auth-tab active' : 'auth-tab'}
+              onClick={() => {
+                setAuthMode('login')
+                setMessage('')
+              }}
+            >
+              Login
+            </button>
+
+            <button
+              type="button"
+              className={authMode === 'signup' ? 'auth-tab active' : 'auth-tab'}
+              onClick={() => {
+                setAuthMode('signup')
+                setMessage('')
+              }}
+            >
+              Sign Up
+            </button>
+          </div>
+
+          <form onSubmit={handleAuth} className="auth-form">
+            <label>
+              Email
+              <input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </label>
+
+            <label>
+              Password
+              <input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Enter your password"
+                minLength="6"
+                required
+              />
+            </label>
+
+            {message && <p className="auth-message">{message}</p>}
+
+            <button type="submit" className="auth-submit">
+              {authMode === 'login' ? 'Login to StudyVault' : 'Create Account'}
+            </button>
+          </form>
+
+          <p className="auth-switch">
+            {authMode === 'login'
+              ? "Don't have an account yet?"
+              : 'Already have an account?'}
+
+            <button
+              type="button"
+              onClick={() => {
+                setAuthMode(authMode === 'login' ? 'signup' : 'login')
+                setMessage('')
+              }}
+            >
+              {authMode === 'login' ? 'Sign Up' : 'Login'}
+            </button>
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app">
       <header className="navbar">
@@ -29,7 +202,12 @@ function App() {
           <p>Personal Study Session Tracker</p>
         </div>
 
-        <button className="logout-button">Logout</button>
+        <div className="nav-user">
+          <span>{user.email}</span>
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </header>
 
       <main className="container">
