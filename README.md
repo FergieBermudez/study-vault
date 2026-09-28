@@ -1,4 +1,4 @@
-# StudyVault
+sessions# StudyVault
 
 StudyVault is a full-stack web application designed to help students organize and track their study sessions. Users can create an account, log in securely, and manage their own study-session information through a simple dashboard.
 
@@ -88,7 +88,10 @@ StudyVault supports all four CRUD operations:
 
 ## Live Application
 
-The deployed application link will be added here after deployment.
+
+StudyVault is deployed on Netlify and can be accessed here:
+
+https://gleeful-trifle-4ff159.netlify.app
 
 ## Author
 
