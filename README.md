@@ -1,4 +1,4 @@
-sessions# StudyVault
+# StudyVault
 
 StudyVault is a full-stack web application designed to help students organize and track their study sessions. Users can create an account, log in securely, and manage their own study-session information through a simple dashboard.
 
